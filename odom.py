@@ -16,7 +16,9 @@ class MinimalSubscriber(Node):
     def __init__(self):
         super().__init__('py_sub_spiral_node')
         message_type = get_msg_class(self, 'odom', include_hidden_topics=True)
+        message_type2 = get_msg_class(self, 'cmd_vel', include_hidden_topics=True)
         print('Message type:', message_type)
+        self.subscriber_ = self.create_subscription(cmd_vel, '/cmd_vel',self.listener_callback, 10)
         self.subscriber_ = self.create_subscription(Odometry, '/odom',self.listener_callback, 10)
         self.subscriber_  # prevent unused variable warning
 
@@ -24,10 +26,10 @@ class MinimalSubscriber(Node):
         """
         Callback function.
         """
-        #dtype = [('xcoords', np.float64), ('ycoords', np.float64), ('zcoords', np.float64), ('Axcoords', np.float64), ('Aycoords', np.float64), ('Azcoords', np.float64),('sec', np.int32), ('nanosec', np.int32)]
+        dtype = [('xcoords', np.float64), ('ycoords', np.float64), ('zcoords', np.float64), ('Axcoords', np.float64), ('Aycoords', np.float64), ('Azcoords', np.float64),('sec', np.int32), ('nanosec', np.int32)]
 
-        #structuredArr= np.array([(msg.Twist.Twist.linear.x), (msg.Twist.Twist.linear.y),(msg.Twist.Twist.linear.z), (msg.Twist.Twist.angular.x),(msg.Twist.Twist.angular.y),(msg.Twist.Twist.angular.z),(msg.header.stamp.sec),(msg.header.stamp.nanosec)], dtype=dtype)
-        #np.savetxt('struc_array.csv', structuredArr, delimiter=',', fmt=['%f' , '%f', '%f','%f','%f','%f','%d','%d'], header='Xcoords,Ycoords,Zcoords,AXcoords,AYcoords,AZcoords,seconds,nanoseconds', comments='')
+        structuredArr= np.array([(msg.Twist.Twist.linear.x), (msg.Twist.Twist.linear.y),(msg.Twist.Twist.linear.z), (msg.Twist.Twist.angular.x),(msg.Twist.Twist.angular.y),(msg.Twist.Twist.angular.z),(msg.header.stamp.sec),(msg.header.stamp.nanosec)], dtype=dtype)
+        np.savetxt('struc_array.csv', structuredArr, delimiter=',', fmt=['%f' , '%f', '%f','%f','%f','%f','%d','%d'], header='Xcoords,Ycoords,Zcoords,AXcoords,AYcoords,AZcoords,seconds,nanoseconds', comments='')
         
         x=msg.linear.x
         y=msg.linear.y
